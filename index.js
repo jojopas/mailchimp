@@ -52,11 +52,16 @@ function job (req, res) {
 
         for(a=0;a<resSettings.length;a++){
 
+          if(!resSettings[a].settings.AUTH0_DOMAIN || !resSettings[a].settings.MAILCHIMP_API_KEY || !resSettings[a].settings.MAILCHIMP_LIST_NAME || !resSettings[a].settings.AUTH0_CONNECTION_NAME){
+            console.log("Missing params for " + resSettings._id);
+            continue;
+          }
+
           var config = {
             TENANT_DOMAIN: resSettings[a].settings.AUTH0_DOMAIN,
             USER_SEARCH_MGMT_TOKEN: req.access_token,
             MAILCHIMP_API_KEY: resSettings[a].settings.MAILCHIMP_API_KEY,
-            MAILCHIMP_LIST_NAME: resSettings[a].settings.MAILCHIMP_LIST_NAME,
+            MAILCHIMP_LIST_NAME: resSettings[a].settings.MAILCHIMP_LIST_NAMEl,
             AUTH0_CONNECTION_NAME: resSettings[a].settings.AUTH0_CONNECTION_NAME,
           };
 
@@ -95,6 +100,7 @@ function getDspToken(cb){
 }
 
 function getDspSettings(token, companies, cb){
+  if(!token || !companies) return cb("Missing params in getDspSettings", null);
   Request
     .post("http://api.myspotlight.tv/companies/auth0mailchimp?token=" + token)
     .send({
