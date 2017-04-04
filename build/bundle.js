@@ -484,18 +484,19 @@ module.exports =
 /***/ function(module, exports) {
 
 	module.exports = {
-		"codeUrl": "https://github.com/auth0/auth0-mailchimp-export",
-		"title": "Auth0 MailChimp Export",
-		"name": "auth0-mailchimp-export",
+		"codeUrl": "https://github.com/jojopas/mailchimp",
+		"title": "Auth0 MailChimp Export for DSP",
+		"name": "dotstudiopro-auth0-mailchimp-export",
 		"version": "1.0.0",
-		"author": "auth0",
+		"author": "dotstudioPRO",
 		"description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List",
 		"type": "cron",
-		"repository": "https://github.com/auth0/auth0-mailchimp-export",
+		"repository": "https://github.com/jojopas/mailchimp",
 		"keywords": [
 			"auth0",
 			"mailchimp",
-			"user profile"
+			"user profile",
+			"dotstudioPRO"
 		],
 		"schedule": "0 */5 * * * *",
 		"secrets": {
@@ -511,12 +512,8 @@ module.exports =
 				"description": "This is the Client Secret",
 				"required": true
 			},
-			"MAILCHIMP_API_KEY": {
-				"description": "This is the MailChimp API Key associated with your MailChimp user account. eg. f1b0602xy124d85d8444a5d4e5eed-us14",
-				"required": true
-			},
-			"MAILCHIMP_LIST_NAME": {
-				"description": "This is the name of the MailChimp List you wish to export Auth0 User Profiles to. eg. Auth0-DBConn1",
+			"DSP_COMPANY_ARRAY": {
+				"description": "This is a comma-separated string with company ids, ex. 1, 2, 3, 4",
 				"required": true
 			},
 			"AUTH0_CONNECTION_NAME": {
