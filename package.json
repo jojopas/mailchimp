@@ -1,6 +1,6 @@
 {
   "name": "dotstudiopro-auth0-mailchimp-export",
-  "version": "1.0.1",
+  "version": "1.1",
   "description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List via the dotstudioPRO API",
   "scripts": {
     "bundle": "webpack -p --config webpack.config.js"
