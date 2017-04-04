@@ -1,7 +1,7 @@
 {
-  "name": "auth0-mailchimp-export",
+  "name": "dotstudiopro-auth0-mailchimp-export",
   "version": "1.0.0",
-  "description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List",
+  "description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List via the dotstudioPRO API",
   "scripts": {
     "bundle": "webpack -p --config webpack.config.js"
   },
@@ -12,14 +12,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/auth0/auth0-mailchimp-export.git"
+    "url": "https://github.com/jojopas/mailchimp.git"
   },
   "author": "richard.seldon@auth0.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/auth0/auth0-mailchimp-export/issues"
+    "url": "https://github.com/jojopas/mailchimp/issues"
   },
-  "homepage": "https://github.com/auth0/auth0-mailchimp-export#readme",
+  "homepage": "https://github.com/jojopas/mailchimp#readme",
   "dependencies": {
     "async": "^2.1.2",
     "auth0": "^2.1.0",
