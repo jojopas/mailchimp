@@ -15,8 +15,9 @@ var mergeAuth0UsersIntoMailChimp = function (config, mailchimp) {
       const ind = (Math.floor(i/100));
       if(!userArrays[ind]) userArrays[ind] = [];
       userArrays[ind].push(val);
-      console.log("User added to", ind);
     });
+
+    console.log("All users mapped for batching.");
 
     setTimeout(() => {
       userArrays.map((userVal, ii) => {
