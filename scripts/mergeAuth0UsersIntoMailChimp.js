@@ -45,7 +45,7 @@ var mergeAuth0UsersIntoMailChimp = function (config, mailchimp) {
               errs += err + "\n";
               return console.error(ii, err);
             }
-            console.log('Batch List update completed successfully for index', ii);
+            if((ii/25) % 1 === 0) console.log('Batch List update completed successfully for index', ii);
             // If we are done but have errors, return the errors.  If not, good to go.
             if (errs.length > 0 && done.length === userArrays.length) {
               console.error(errs);

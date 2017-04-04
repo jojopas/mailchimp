@@ -11,8 +11,6 @@ var getUsers = function (config, allUsers, perPage, pageNumber) {
   var USER_SEARCH_MGMT_TOKEN = config.USER_SEARCH_MGMT_TOKEN;
   var AUTH0_CONNECTION_NAME = config.AUTH0_CONNECTION_NAME;
 
-  console.log("COMPANY: ", config.AUTH0_COMPANY);
-
   var deferred = Q.defer();
   var searchCriteria = { q: 'user_metadata.companies:"' + config.AUTH0_COMPANY + '"', search_engine: 'v2', per_page: perPage, page: pageNumber, fields: 'email,given_name,family_name', include_fields: 'true' };
 
@@ -41,6 +39,7 @@ var getUsers = function (config, allUsers, perPage, pageNumber) {
 
 var getAuth0Users = function (config) {
   return function (callback) {
+    console.log("COMPANY: ", config.AUTH0_COMPANY);
     getUsers(config, [], 100, 0).then(function (users) {
       var totalUsers = users.length;
       console.log('Total number of Auth0 users: ' + totalUsers);

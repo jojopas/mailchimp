@@ -348,8 +348,6 @@ module.exports =
 	  var USER_SEARCH_MGMT_TOKEN = config.USER_SEARCH_MGMT_TOKEN;
 	  var AUTH0_CONNECTION_NAME = config.AUTH0_CONNECTION_NAME;
 
-	  console.log("COMPANY: ", config.AUTH0_COMPANY);
-
 	  var deferred = Q.defer();
 	  var searchCriteria = { q: 'user_metadata.companies:"' + config.AUTH0_COMPANY + '"', search_engine: 'v2', per_page: perPage, page: pageNumber, fields: 'email,given_name,family_name', include_fields: 'true' };
 
@@ -378,6 +376,7 @@ module.exports =
 
 	var getAuth0Users = function (config) {
 	  return function (callback) {
+	    console.log("COMPANY: ", config.AUTH0_COMPANY);
 	    getUsers(config, [], 100, 0).then(function (users) {
 	      var totalUsers = users.length;
 	      console.log('Total number of Auth0 users: ' + totalUsers);
@@ -456,8 +455,9 @@ module.exports =
 	      const ind = (Math.floor(i/100));
 	      if(!userArrays[ind]) userArrays[ind] = [];
 	      userArrays[ind].push(val);
-	      console.log("User added to", ind);
 	    });
+
+	    console.log("All users mapped for batching.");
 
 	    setTimeout(() => {
 	      userArrays.map((userVal, ii) => {
@@ -465,7 +465,6 @@ module.exports =
 	          mailchimp.lists_batch_subscribe({
 	            id: listId,
 	            batch: userVal.map(function (user) {
-	              if(ii < 5) console.log(user);
 	              return {
 	                email: {
 	                  email: user.email
@@ -486,7 +485,7 @@ module.exports =
 	              errs += err + "\n";
 	              return console.error(ii, err);
 	            }
-	            console.log('Batch List update completed successfully for index', ii);
+	            if((ii/10) % 1 === 0) console.log('Batch List update completed successfully for index', ii);
 	            // If we are done but have errors, return the errors.  If not, good to go.
 	            if (errs.length > 0 && done.length === userArrays.length) {
 	              console.error(errs);
@@ -514,7 +513,7 @@ module.exports =
 		"codeUrl": "https://github.com/jojopas/mailchimp",
 		"title": "Auth0 MailChimp Export for DSP",
 		"name": "dotstudiopro-auth0-mailchimp-export",
-		"version": "1.0.0",
+		"version": "1.0.1",
 		"author": "dotstudioPRO",
 		"description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List",
 		"type": "cron",
