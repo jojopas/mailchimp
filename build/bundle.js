@@ -137,9 +137,15 @@ module.exports =
 	        //   return res.status(200).send("MailChimp syncronization successful!");
 	        // });
 
+	        var errs = "";
+
 	        requests.map((val, i) => {
 	          val.then(() => {
 	            console.log("Yep: ", i);
+	            if(i === (requests.length-1)) return res.status(errs.length > 0 ? 500 : 200).send(errs.length > 0 ? errs : "Lookin' Good!");
+	          }, (err) => {
+	            errs += err + "\n";
+	            if(i === (requests.length-1)) return res.status(500).send(errs);
 	          });
 	        });
 
