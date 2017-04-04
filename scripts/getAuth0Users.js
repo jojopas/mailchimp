@@ -14,7 +14,7 @@ var getUsers = function (config, allUsers, perPage, pageNumber) {
   console.log("COMPANY: ", config.AUTH0_COMPANY);
 
   var deferred = Q.defer();
-  var searchCriteria = { q: 'user_metadata.companies:"' + config.AUTH0_COMPANY + '"', search_engine: 'v2', per_page: perPage, page: pageNumber, fields: 'email', include_fields: 'true' };
+  var searchCriteria = { q: 'user_metadata.companies:"' + config.AUTH0_COMPANY + '"', search_engine: 'v2', per_page: perPage, page: pageNumber, fields: 'email,given_name,family_name', include_fields: 'true' };
 
   var options = {
     method: 'GET',

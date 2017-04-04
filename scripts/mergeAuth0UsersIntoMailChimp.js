@@ -24,7 +24,6 @@ var mergeAuth0UsersIntoMailChimp = function (config, mailchimp) {
           mailchimp.lists_batch_subscribe({
             id: listId,
             batch: userVal.map(function (user) {
-              if(ii < 5) console.log(user);
               return {
                 email: {
                   email: user.email
