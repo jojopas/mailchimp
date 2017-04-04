@@ -11,22 +11,19 @@ function job (req, res) {
   var ctx = req.webtaskContext;
 
   var required_settings = [
+    'AUTH0_DOMAIN',
+    'AUTH0_CLIENT_ID',
+    'AUTH0_CLIENT_SECRET',
+    'AUTH0_CONNECTION_NAME',
     'DSP_COMPANY_ARRAY' // Array of company IDs, like so: ['abcdefg', 'hijklmnop', '123456']
   ],
   a,
   dsp_array,
   results = [],
-  reqeusts = [],
+  requests = [],
   status = 200;
 
-  // required_settings = [
-  //   'AUTH0_DOMAIN',
-  //   'AUTH0_CLIENT_ID',
-  //   'AUTH0_CLIENT_SECRET',
-  //   'MAILCHIMP_API_KEY',
-  //   'MAILCHIMP_LIST_NAME',
-  //   'AUTH0_CONNECTION_NAME'
-  // ];
+
 
   var missing_settings = required_settings.filter(function (setting) {
     return !ctx.data[setting];
@@ -36,46 +33,50 @@ function job (req, res) {
     return res.status(400).send({message: 'Missing settings: ' + missing_settings.join(', ')});
   }
 
-  try{
-    dsp_array = JSON.parse(ctx.data.DSP_COMPANY_ARRAY);
-  } catch(e){
-    return res.sendStatus(500).send('Error - could not parse the given string into an array for DSP_COMPANY_ARRAY');
-  }
+    dsp_array = ctx.data.DSP_COMPANY_ARRAY;
 
     getDspToken(function(err, resToken){
 
-      if(err) return res.sendStatus(500).send("Error getting token: " + err);
+      if(err) return res.status(500).send("Error getting token: " + err);
 
       getDspSettings(resToken.token, dsp_array, function(err, resSettings){
 
-        if(err) return res.sendStatus(500).send("Error getting DSP settings: " + err);
+        if(err || !resSettings.success) return res.status(500).send("Error getting DSP settings: " + (err || resSettings.error));
 
-        for(a=0;a<resSettings.length;a++){
+        var settings = resSettings.settings;
 
-          if(!resSettings[a].settings.AUTH0_DOMAIN || !resSettings[a].settings.MAILCHIMP_API_KEY || !resSettings[a].settings.MAILCHIMP_LIST_NAME || !resSettings[a].settings.AUTH0_CONNECTION_NAME){
-            console.log("Missing params for " + resSettings._id);
+        for(a=0;a<settings.length;a++){
+
+          if(!settings[a].auth0_config.mailchimp_api_key || !settings[a].auth0_config.mailchimp_list_name){
+            console.log("Missing params for " + settings[a]._id);
             continue;
           }
 
           var config = {
-            TENANT_DOMAIN: resSettings[a].settings.AUTH0_DOMAIN,
+            TENANT_DOMAIN: req.webtaskContext.data.AUTH0_DOMAIN,
             USER_SEARCH_MGMT_TOKEN: req.access_token,
-            MAILCHIMP_API_KEY: resSettings[a].settings.MAILCHIMP_API_KEY,
-            MAILCHIMP_LIST_NAME: resSettings[a].settings.MAILCHIMP_LIST_NAMEl,
-            AUTH0_CONNECTION_NAME: resSettings[a].settings.AUTH0_CONNECTION_NAME,
+            MAILCHIMP_API_KEY: settings[a].auth0_config.mailchimp_api_key,
+            MAILCHIMP_LIST_NAME: settings[a].auth0_config.mailchimp_list_name,
+            AUTH0_COMPANY: settings[a]._id,
           };
 
           requests.push(syncWithMailChimp(config));
 
         }
 
-        async.waterfall(requests, function(err){
-          if (err) {
-            console.error(err);
-            return res.sendStatus(500).send("Error processing MailChimp requests: " + err);
-          }
-          // All good
-          return res.sendStatus(200).send("MailChimp syncronization successful!");
+        // async.waterfall(requests, function(err){
+        //   if (err) {
+        //     console.error(err);
+        //     return res.status(500).send("Error processing MailChimp requests: " + err);
+        //   }
+        //   // All good
+        //   return res.status(200).send("MailChimp syncronization successful!");
+        // });
+
+        requests.map((val, i) => {
+          val.then(() => {
+            console.log("Yep: ", i);
+          });
         });
 
       });
@@ -104,7 +105,7 @@ function getDspSettings(token, companies, cb){
   Request
     .post("http://api.myspotlight.tv/companies/auth0mailchimp?token=" + token)
     .send({
-      companies: JSON.stringify(companies)
+      companyIds: companies
     })
     // .type('application/json')
     .end(function (err, res) {
