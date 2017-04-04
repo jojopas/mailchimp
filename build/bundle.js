@@ -459,14 +459,13 @@ module.exports =
 	      console.log("User added to", ind);
 	    });
 
-	   userArrays.sort((a, b) => a - b);
-
 	    setTimeout(() => {
 	      userArrays.map((userVal, ii) => {
 	        setTimeout(() => {
 	          mailchimp.lists_batch_subscribe({
 	            id: listId,
 	            batch: userVal.map(function (user) {
+	              if(ii < 5) console.log(user);
 	              return {
 	                email: {
 	                  email: user.email
