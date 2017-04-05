@@ -69,6 +69,7 @@ module.exports =
 	var syncWithMailChimp = __webpack_require__(6);
 	var metadata = __webpack_require__(15);
 	var async = __webpack_require__(8);
+	var timeout = __webpack_require__(16);
 
 	function job (req, res) {
 
@@ -219,6 +220,10 @@ module.exports =
 	  maxAge: 1000 * 60 * 60
 	});
 
+	function haltOnTimedout (req, res, next) {
+	  if (!req.timedout) next()
+	}
+
 	app.use(function (req, res, next) {
 	  // Exclude /meta from authz
 	  if (req.path === '/meta') {
@@ -243,8 +248,8 @@ module.exports =
 	  });
 	});
 
-	app.get ('/', job);
-	app.post('/', job);
+	app.get ('/', timeout('240s'), haltOnTimedout, job);
+	app.post('/', timeout('240s'), haltOnTimedout, job);
 
 	app.get('/meta', function (req, res) {
 	  res.status(200).send(metadata);
@@ -485,7 +490,7 @@ module.exports =
 	              errs += err + "\n";
 	              return console.error(ii, err);
 	            }
-	            if((ii/10) % 1 === 0) console.log('Batch List update completed successfully for index', ii);
+	            if((ii/25) % 1 === 0) console.log('Batch List update completed successfully for index', ii);
 	            // If we are done but have errors, return the errors.  If not, good to go.
 	            if (errs.length > 0 && done.length === userArrays.length) {
 	              console.error(errs);
@@ -513,7 +518,7 @@ module.exports =
 		"codeUrl": "https://github.com/jojopas/mailchimp",
 		"title": "Auth0 MailChimp Export for DSP",
 		"name": "dotstudiopro-auth0-mailchimp-export",
-		"version": "1.0.1",
+		"version": "1.1.0",
 		"author": "dotstudioPRO",
 		"description": "Allows Auth0 Customers to synchronize their Auth0 User base (those that have an email) with a MailChimp List",
 		"type": "cron",
@@ -548,6 +553,12 @@ module.exports =
 			}
 		}
 	};
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	module.exports = require("connect-timeout");
 
 /***/ }
 /******/ ]);

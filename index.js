@@ -5,6 +5,7 @@ var Request = require('superagent');
 var syncWithMailChimp = require('./scripts/syncWithMailChimp');
 var metadata = require('./webtask.json');
 var async = require('async');
+var timeout = require('connect-timeout');
 
 function job (req, res) {
 
@@ -155,6 +156,10 @@ var getTokenCached = memoizer({
   maxAge: 1000 * 60 * 60
 });
 
+function haltOnTimedout (req, res, next) {
+  if (!req.timedout) next()
+}
+
 app.use(function (req, res, next) {
   // Exclude /meta from authz
   if (req.path === '/meta') {
@@ -179,8 +184,8 @@ app.use(function (req, res, next) {
   });
 });
 
-app.get ('/', job);
-app.post('/', job);
+app.get ('/', timeout('240s'), haltOnTimedout, job);
+app.post('/', timeout('240s'), haltOnTimedout, job);
 
 app.get('/meta', function (req, res) {
   res.status(200).send(metadata);
