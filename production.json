@@ -1,7 +1,7 @@
 {
   "apps": [{
     "name": "MailChimp/Auth0 Connector",
-    "script": "webpack && wt serve build/bundle.js --port 3000 --no-merge --secret AUTH0_DOMAIN='dotstudiopro.auth0.com' --secret AUTH0_CLIENT_ID='lTKrBPOCP2CHrM211DmlHMyqBE3PsJ3O' --secret AUTH0_CLIENT_SECRET='3_g1kvyA7NH9dpdc7PNI68jFWVts-x9wdhD4UiUhVDcUbHVM2k0vgKMDWQo0bgaQ' --secret AUTH0_CONNECTION_NAME='Username-Password-Authentication' --secret DSP_COMPANY_ARRAY='57fe8fe399f815e309dbc2f4'",
+    "script": "./run.sh",
     "log_date_format": "YYYY-MM-DD HH:mm Z",
     "cwd": "/var/www/mailchimp",
     "env": {
